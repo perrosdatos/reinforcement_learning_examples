@@ -31,6 +31,7 @@ class PlotGrid:
                 plt.text((x)+0.5,(self.dimension_y-1-y)+0.5,"{0:.2f}".format(temp_val) if type(temp_val) == "float" else temp_val, ha="center", va="center")
 
         plt.grid(True)
+        plt.savefig("img/cuadricula/{}".format(title.replace(" ","_").replace("ó","o").lower()))
         plt.show()
         
     def printActionValue(self,action_value, number = 0):
@@ -47,4 +48,4 @@ class PlotGrid:
                     simbols[x]= simbols[x]+"←"
                 if(action_value[x]["derecha"] == max_p):
                     simbols[x]= simbols[x]+"→"
-        self.drawGrid(simbols,"Action value {}".format(number))
+        self.drawGrid(simbols,"Mejor acción en {}".format(number))
