@@ -16,7 +16,7 @@ class PlotGrid:
         self.total_length = dimension_x*dimension_y
         
 
-    def drawGrid(self,grid,title):
+    def drawGrid(self,grid,title, parent = ""):
         size_l = int(np.sqrt(len(grid)))
         plt.figure(figsize=(4,4))
         plt.ylim(0,self.dimension_x)
@@ -31,7 +31,7 @@ class PlotGrid:
                 plt.text((x)+0.5,(self.dimension_y-1-y)+0.5,"{0:.2f}".format(temp_val) if type(temp_val) == "float" else temp_val, ha="center", va="center")
 
         plt.grid(True)
-        plt.savefig("img/cuadricula/{}".format(title.replace(" ","_").replace("ó","o").lower()))
+        plt.savefig("img/cuadricula/{}/{}".format(parent, title.replace(" ","_").replace("ó","o").lower()))
         plt.show()
         
     def printActionValue(self,action_value, number = 0):
