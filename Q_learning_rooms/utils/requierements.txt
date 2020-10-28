@@ -1,0 +1,11 @@
+numpy
+scipy
+h5py
+scikit-learn
+Pillow
+imutils
+beautifulsoup4
+tensorflow
+keras
+opencv-contrib-python
+git+git://github.com/fizyr/keras-retinanet.git@42068ef9e406602d92a1afe2ee7d470f7e9860df
