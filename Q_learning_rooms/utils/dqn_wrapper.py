@@ -18,20 +18,29 @@ class DQNWrapper:
         self.gamma = gamma
         self.terminal_state = terminal_state
 
-    def train(self, X, Y, YS, TS, num_qt_update = 100, num_batch = 1,epochs = 1000):
+    def train(self, X, Y, YS, TS, num_qt_update = 100, num_batch = 1,epochs = 1000, callback_batch = lambda q_model, x, y, ys, counter : None ):
         sub_epochs = int(np.floor(epochs/num_qt_update))
         residual_epochs = epochs%num_qt_update
 
         #new_y = self.__get_y_target_reward(X,Y, YS, TS)
         #return Y, new_y
+        epoch_counter = 0
+        sub_hist = None
+        full_hist = []
         for _ in range(sub_epochs):
             new_y = self.__get_y_target_reward(X,Y, YS, TS)
-            self.q_model.fit(x=X, y = new_y,  batch_size = num_batch, epochs=num_qt_update, verbose=0)
+            sub_hist = self.q_model.fit(x=X, y = new_y,  batch_size = num_batch, epochs=num_qt_update, verbose=0)
             self.__update_q_target()
+            full_hist.append(sub_hist)
+            epoch_counter+=num_qt_update
+            callback_batch(self.q_model, X, Y, YS, epoch_counter)
         if(residual_epochs != 0):
             new_y = self.__get_y_target_reward(X,Y, YS, TS)
-            self.q_model.fit(x=X, y = new_y,  batch_size = num_batch, epochs=residual_epochs, verbose=0)
-        return Y, new_y
+            sub_hist = self.q_model.fit(x=X, y = new_y,  batch_size = num_batch, epochs=residual_epochs, verbose=0)
+            full_hist.append(sub_hist)
+            epoch_counter+=residual_epochs
+            callback_batch(self.q_model, X, Y, YS, epoch_counter)
+        return  full_hist
     def __get_y_target_reward(self, x, y, ys, ts):
         new_y = y+self.gamma*np.array([np.max(self.q_model_target.predict(ys_iterator),axis=1) for ys_iterator in ys])
         new_y[ts == True] = y[ts == True]
